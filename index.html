@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProgressViz Login</title>
+    <style>
+        /* CSS: Making it look like your Figma design */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 350px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .logo-text { font-weight: bold; font-size: 1.2rem; }
+        .viz { color: #4CAF50; }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 20px 0;
+            border: 2px solid #FFD966; /* Yellow border from your image */
+            border-radius: 4px;
+            background-color: #FFF9E6;
+        }
+
+        button {
+            background-color: #F8CECC; /* Pinkish color from your image */
+            border: 1px solid #b89494;
+            padding: 10px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+
+        button:hover { background-color: #efb7b5; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="logo-container">
+            <span class="logo-text">Progress<span class="viz">Viz</span></span>
+        </div>
+        
+        <h3>Welcome to ProgressViz!</h3>
+        <p>Your self-learning helper!</p >
+
+        <select id="roleSelect">
+            <option value="" disabled selected>Select @</option>
+            <option value="student">Student</option>
+            <option value="instructor">Instructor</option>
+        </select>
+
+        <button onclick="nextStep()">Next</button>
+    </div>
+
+    <script>
+        // JavaScript: The interactivity
+        function nextStep() {
+            const role = document.getElementById('roleSelect').value;
+            if (role === "") {
+                alert("Please select a role first!");
+            } else {
+                alert("Navigating to Page 2 for: " + role);
+                // In a real app, you'd use: window.location.href = "page2.html";
+            }
+        }
+    </script>
+
+</body>
+</html>
