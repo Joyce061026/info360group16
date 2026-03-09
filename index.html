@@ -3,1011 +3,430 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProgressViz Log-in - Interface</title>
+    <title>ProgressViz - Login Role Selection</title>
     <style>
-        /* General Reset and Body Styles */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
+        /* Base styles and variables */
+        :root {
+            --bg-canvas: #f6f6f6;
+            --main-container-bg: #ffffff;
+            --main-container-border: #e0e0e0;
+            --text-heading: #333333;
+            --text-body: #666666;
+            --text-grey-faded: #999999;
+            --input-select-bg: #fff1c7; /* Pale yellow */
+            --input-select-border: #f8db7b;
+            --input-select-text: #666666;
+            --dropdown-bg: #e0e0e0;
+            --dropdown-border: #cccccc;
+            --btn-next-bg: #ffd6d6;
+            --btn-next-border: #ffb8b8;
+            --btn-next-text: #8b3c3c;
+            --viz-green: #4CAF50;
+            --viz-bar-1: #d2c88d; /* Muted yellow/brown */
+            --viz-bar-2: #8cb369; /* Muted green */
+            --viz-bar-3: #5c8e5e; /* Deeper green */
         }
 
         body {
-            background-color: #F6F6F6;
-            background-image: radial-gradient(#d3d3d3 1px, transparent 1px);
-            background-size: 20px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: var(--bg-canvas);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            color: var(--text-heading);
+            overflow-x: hidden;
         }
 
-        /* Container for the overall layout */
-        .page-wrapper {
+        /* The overall dotted canvas effect */
+        .canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 650px; /* Limits the max-width to look like a specific view */
+            height: 100%;
+            background-image: radial-gradient(#d0d0d0 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
+
+        /* Screen Wrapper */
+        .screen-container {
+            width: 90%;
+            max-width: 800px;
+            background-color: var(--main-container-bg);
+            border: 1px solid var(--main-container-border);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-top: 50px;
             position: relative;
         }
 
-        /* The label "Log-in Page 1" */
+        /* Figma Label */
         .page-label {
             position: absolute;
-            top: -15px;
+            top: 2px;
             left: 20px;
-            background-color: #E2E2E2;
-            color: #333;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-weight: bold;
+            font-family: monospace;
+            background-color: #e0e0e0;
+            color: #444;
+            padding: 4px 10px;
+            border-radius: 4px;
             font-size: 14px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Main application container */
-        .main-app-container {
-            border: 1px solid #C4C4C4;
-            border-radius: 12px;
-            background-color: #FFFFFF;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding-bottom: 25px; /* Space for the description text below */
-        }
-
-        /* The interactive card element */
-        .card-container {
-            border: 2px solid #6C727A;
-            border-radius: 10px;
-            margin: 50px 25px 30px;
-            background-color: #FFFFFF;
-            padding-bottom: 30px;
+        /* Inner App Window Simulation */
+        .app-frame {
+            border: 1px solid var(--text-grey-faded);
+            padding: 40px;
+            border-radius: 4px;
+            margin-bottom: 24px;
             position: relative;
         }
 
-        /* Header (Logo) Section */
-        .card-header {
+        /* Header (Logo) */
+        .app-header {
             display: flex;
             align-items: center;
-            padding: 20px 20px 15px;
-            border-bottom: 1px solid #6C727A;
-        }
-
-        .logo-placeholder {
-            width: 36px;
-            height: 30px;
-            margin-right: 15px;
-            /* Simple placeholder if no image exists:
-               background-color: transparent; border: 2px solid grey; */
-        }
-
-        .brand-text {
-            font-size: 22px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .brand-viz {
-            color: #618956;
-        }
-
-        /* Main content area (Titles) */
-        .card-content {
-            padding: 30px 25px 0px;
-            text-align: left;
-        }
-
-        .welcome-title {
-            font-size: 19px;
-            font-weight: bold;
-            color: #1A1A1A;
-            margin-bottom: 8px;
-        }
-
-        .helper-text {
-            font-size: 18px;
-            color: #444;
+            border-bottom: 1px solid var(--text-grey-faded);
+            padding-bottom: 20px;
             margin-bottom: 30px;
         }
 
-        /* Custom Dropdown Container */
-        .role-dropdown {
-            width: 100%;
-            max-width: 320px;
-            position: relative;
-            margin-bottom: 40px;
+        /* Vector Logo Simulation */
+        .viz-logo {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            margin-right: 10px;
+        }
+        .logo-bar { width: 6px; border-radius: 1px; }
+        .bar1 { height: 16px; background-color: var(--viz-bar-1); }
+        .bar2 { height: 22px; background-color: var(--viz-bar-2); }
+        .bar3 { height: 28px; background-color: var(--viz-bar-3); }
+
+        .viz-title {
+            font-size: 22px;
+            color: #333;
+            font-weight: bold;
+        }
+        .viz-title-viz { color: var(--viz-green); font-weight: bold;}
+
+        /* App Content */
+        .app-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
-        /* Dropdown Trigger Box */
-        .dropdown-box {
-            background-color: #FFEDBD;
-            border: 1px solid #EEC56A;
-            border-radius: 6px;
+        .welcome-msg { font-size: 1.5rem; font-weight: 700; margin: 0; }
+        .helper-msg { font-size: 1rem; color: var(--text-body); margin: 5px 0 30px 0; }
+
+        /* --- Interactive Dropdown Styling --- */
+        .role-selector-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px; /* Matching Figma proportional width */
+            margin-bottom: 30px;
+        }
+
+        /* The input itself (main display) */
+        .custom-select-trigger {
+            background-color: var(--input-select-bg);
+            border: 1px solid var(--input-select-border);
+            color: var(--input-select-text);
             padding: 12px 15px;
+            border-radius: 6px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            text-align: left;
+            box-sizing: border-box;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            font-size: 16px;
-            color: #2D2D2D;
             user-select: none;
         }
+        .select-icon { color: var(--text-body); font-size: 1.2rem; margin-left: auto;}
 
-        /* Custom dropdown menu list */
-        .dropdown-menu {
+        /* The hidden actual select for form submission (optional) */
+        .hidden-select { display: none; }
+
+        /* The options dropdown menu */
+        .custom-options-container {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 1px);
             left: 0;
             width: 100%;
-            background-color: #E2E2E2;
-            border-top: 1px solid #7D7F82;
-            border-left: 2px solid #7D7F82;
-            border-right: 2px solid #7D7F82;
-            border-bottom: 2px solid #7D7F82;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            display: none; /* Initially hidden */
+            background-color: var(--dropdown-bg);
+            border: 1px solid var(--dropdown-border);
+            border-radius: 6px;
+            overflow: hidden;
+            display: none; /* Hidden by default */
             z-index: 10;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        .dropdown-menu.show {
+        .role-selector-container.open .custom-options-container {
             display: block;
         }
 
-        /* Dropdown options */
-        .dropdown-item {
-            padding: 10px 15px;
-            font-size: 16px;
-            color: #2D2D2D;
+        .custom-option {
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            color: #333;
             cursor: pointer;
+            text-align: left;
+            box-sizing: border-box;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
-        .dropdown-item:hover {
-            background-color: #D6D6D6;
-        }
-
-        /* Specific style for selected option to look like figma */
-        .dropdown-item.selected {
-            background-color: #D6D6D6;
-        }
-
-        /* Checkmark icon for selected option */
-        .checkmark {
+        .custom-option:hover { background-color: #d8d8d8; }
+        .custom-option.selected { font-weight: bold; background-color: #f1f1f1; }
+        
+        /* The specific tick mark style */
+        .tick-icon {
             display: none;
-            width: 14px;
-            height: 14px;
+            color: #333; /* Darker to match Figma */
+            width: 12px; height: 12px;
+            margin-right: -4px;
         }
-
-        .dropdown-item.selected .checkmark {
+        .custom-option.selected .tick-icon {
             display: block;
         }
 
-        /* Next Button */
-        .next-button {
-            float: right;
-            margin-right: 20px;
-            background-color: #F8D9D2;
-            border: 2px solid #F1B7B0;
-            border-radius: 6px;
-            padding: 10px 25px;
-            color: #71383B;
-            font-size: 14px;
-            cursor: not-allowed;
-            text-align: center;
-            opacity: 0.8;
-            transition: all 0.3s ease;
+        /* Button */
+        .btn-container {
+            width: 100%;
+            max-width: 300px;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: auto; /* Push to bottom for desktop view, but need special handling */
         }
-
-        /* Enable the button with styles when role is selected */
-        .next-button.enabled {
-            opacity: 1;
+        
+        .btn-next {
+            background-color: var(--btn-next-bg);
+            border: 1px solid var(--btn-next-border);
+            color: var(--btn-next-text);
+            padding: 8px 30px;
+            font-size: 0.9rem;
+            border-radius: 4px;
             cursor: pointer;
-            background-color: #F1B7B0;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+        .btn-next:hover { background-color: #ffcccc; }
+        
+        /* Footer/Explanation Area */
+        .footer-explanation {
+            font-size: 1rem;
+            color: var(--text-body);
+            line-height: 1.6;
+            margin: 0;
         }
 
-        /* Footer description text */
-        .footer-description {
-            padding: 20px 25px 0 25px;
-            color: #333333;
-            font-size: 15px;
-            line-height: 1.5;
-            text-align: left;
-        }
-
-        /* Mobile adaptation (for smaller screens) */
-        @media (max-width: 480px) {
-            .page-wrapper {
-                max-width: 100%;
-            }
-
-            .card-header, .card-content, .footer-description {
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-
-            .logo-placeholder {
-                width: 30px;
-                margin-right: 10px;
-            }
-
-            .brand-text {
-                font-size: 18px;
-            }
-
-            .next-button {
-                float: none;
-                width: calc(100% - 30px);
-                margin: 0 auto;
-                display: block;
-            }
-
-            .role-dropdown {
-                max-width: 100%;
+        /* --- RESPONSIVE MOBILE ADJUSTMENTS --- */
+        @media (max-width: 600px) {
+            .screen-container { width: 95%; padding: 15px; margin-top: 20px; }
+            .page-label { left: 10px; top: 0; font-size: 12px; }
+            .app-frame { padding: 25px 15px; }
+            .viz-title { font-size: 18px; }
+            .welcome-msg { font-size: 1.2rem; }
+            .helper-msg { font-size: 0.9rem; margin-bottom: 20px;}
+            .custom-select-trigger, .custom-option { font-size: 1rem; padding: 10px; }
+            .btn-next { width: 100%; font-size: 1rem; padding: 12px; }
+            
+            /* Center the logo in mobile */
+            .app-header {
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-
-<div class="page-wrapper">
-    <div class="page-label">Log-in Page 1</div>
-
-    <main class="main-app-container">
-        <article class="card-container">
-            <header class="card-header">
-                < img src="https://via.placeholder.com/36x30/FFFFFF/5A6F4C?text=📊" alt="ProgressViz Logo" class="logo-placeholder">
-                <span class="brand-text">Progress<span class="brand-viz">Viz</span></span>
+    <div class="canvas"></div>
+    <div class="screen-container">
+        <span class="page-label">Log-in Page 1</span>
+        
+        <div class="app-frame">
+            <header class="app-header">
+                <div class="viz-logo">
+                    <div class="logo-bar bar1"></div>
+                    <div class="logo-bar bar2"></div>
+                    <div class="logo-bar bar3"></div>
+                </div>
+                <span class="viz-title">Progress<span class="viz-title-viz">Viz</span></span>
             </header>
 
-            <section class="card-content">
-                <h1 class="welcome-title">Welcome to ProgressViz!</h1>
-                <p class="helper-text">Your self-learning helper!</p >
-
-                <div class="role-dropdown" id="roleDropdown">
-                    <div class="dropdown-box" id="dropdownTrigger">
-                        <span id="selectedOptionText">Select</span>
-                        <span class="at-icon">@</span>
+            <main class="app-content">
+                <h2 class="welcome-msg">Welcome to ProgressViz!</h2>
+                <p class="helper-msg">Your self-learning helper!</p >
+                
+                <div class="role-selector-container" id="roleSelector">
+                    <div class="custom-select-trigger" onclick="toggleDropdown()">
+                        <span id="selectedValue">Select</span>
+                        <span class="select-icon">@</span>
                     </div>
-                    
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="dropdown-item" data-role="Student">
+                    <div class="custom-options-container">
+                        <div class="custom-option selected" data-value="student" onclick="selectRole(this)">
                             <span>Student</span>
-                            <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="#2D2D2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 6 9 17 4 12"></polyline>
+                            <svg class="tick-icon" viewBox="0 0 10 10">
+                                <path fill="none" stroke="currentColor" stroke-width="2" d="M1 5l3 3 5-6"/>
                             </svg>
                         </div>
-                        <div class="dropdown-item" data-role="Instructor">
+                        <div class="custom-option" data-value="instructor" onclick="selectRole(this)">
                             <span>Instructor</span>
-                            <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="#2D2D2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 6 9 17 4 12"></polyline>
+                            <svg class="tick-icon" viewBox="0 0 10 10">
+                                <path fill="none" stroke="currentColor" stroke-width="2" d="M1 5l3 3 5-6"/>
                             </svg>
                         </div>
                     </div>
                 </div>
 
-                <button class="next-button" id="nextButton" disabled>Next</button>
-            </section>
-        </article>
-
-        <footer class="footer-description">
+                <div class="btn-container">
+                    <button class="btn-next">Next</button>
+                </div>
+            </main>
+        </div>
+        
+        <p class="footer-explanation">
             This screen allows users to select their role when entering the platform. Users can choose whether they are a student or an instructor. This helps the system provide the correct interface and learning tools for different types of users.
-        </footer>
+        </p >
+    </div>
+
+    <script>
+        const roleSelector = document.getElementById('roleSelector');
+        const selectedValueSpan = document.getElementById('selectedValue');
+
+        function toggleDropdown() {
+            roleSelector.classList.toggle('open');
+        }
+
+        function selectRole(element) {
+            // 1. Update the display value
+            const roleName = element.querySelector('span').innerText;
+            selectedValueSpan.innerText = roleName;
+
+            // 2. Clear old selection
+            document.querySelectorAll('.custom-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // 3. Mark current as selected
+            element.classList.remove('selected'); // Required to re-trigger transition if needed
+            element.classList.add('selected');
+
+            // 4. Close the dropdown
+            roleSelector.classList.remove('open');
+            
+            // Log selection (useful for debugging)
+            console.log('Selected Role:', element.getAttribute('data-value'));
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e){   
+            if (!roleSelector.contains(e.target)){
+                roleSelector.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>
+
+<div id="page1" class="app-frame">
+    <main class="app-content">
+        <h2 class="welcome-msg">Welcome to ProgressViz!</h2>
+        <p class="helper-msg">Your self-learning helper!</p >
+        
+        <div class="role-selector-container" id="roleSelector">
+            </div>
+
+        <div class="btn-container">
+            <button id="toPage2" class="btn-next">Next</button>
+        </div>
     </main>
 </div>
 
-<script>
-    const dropdownTrigger = document.getElementById('dropdownTrigger');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    const selectedOptionText = document.getElementById('selectedOptionText');
-    const nextButton = document.getElementById('nextButton');
-    const dropdownItems = document.querySelectorAll('.dropdown-item');
+<div id="page2" class="app-frame" style="display: none;">
+    <header class="app-header">
+        </header>
+    <main class="app-content">
+        <h2 class="welcome-msg">Good morning!</h2>
+        <p class="helper-msg">Student 4375 😄</p >
+        
+        <div class="account-actions">
+            <div class="action-card blue-card">Create an account</div>
+            <div class="action-card purple-card">Sign in to an account</div>
+        </div>
 
-    // Toggle dropdown open/closed
-    dropdownTrigger.addEventListener('click', (e) => {
-        // Prevent accidental form submission
-        e.preventDefault(); 
-        dropdownMenu.classList.toggle('show');
-    });
-
-    // Handle item selection within the custom dropdown
-    dropdownItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const roleName = item.dataset.role;
-
-            // Remove previous selection formatting
-            dropdownItems.forEach(i => i.classList.remove('selected'));
-
-            // Apply selected formatting to the clicked item
-            item.classList.add('selected');
-
-            // Update the visual text box with the selection
-            selectedOptionText.textContent = roleName;
-
-            // Close the menu after selection
-            dropdownMenu.classList.remove('show');
-
-            // Enable and style the "Next" button
-            nextButton.removeAttribute('disabled');
-            nextButton.classList.add('enabled');
-            nextButton.style.backgroundColor = '#F1B7B0'; // Specific Figma color when active
-        });
-    });
-
-    // Handle "Next" button click for interactivity testing
-    nextButton.addEventListener('click', () => {
-        const selectedRole = selectedOptionText.textContent;
-        if (selectedRole !== "Select") {
-            alert(`Proceeding to the next step as a ${selectedRole}.`);
-            // In a real app, this would trigger navigation, e.g., location.href = '/dashboard-student';
-        }
-    });
-
-    // Click outside to close the dropdown
-    document.addEventListener('click', (event) => {
-        const isClickInside = document.getElementById('roleDropdown').contains(event.target);
-        if (!isClickInside) {
-            dropdownMenu.classList.remove('show');
-        }
-    });
-</script>
-
-</body>
-</html>
-
-<div id="step-1" class="page-content">
-    <button class="next-button" id="nextButton1" disabled>Next</button>
+        <div class="btn-container">
+            <button class="btn-next">Next</button>
+        </div>
+    </main>
 </div>
-
-<div id="step-2" class="page-content" style="display: none;">
-    <h1 class="welcome-title">Good morning!</h1>
-    <p class="helper-text">Student 4375 😄</p >
-    
-    <div class="button-group">
-        <button class="action-btn create-btn">Create an account</button>
-        <button class="action-btn signin-btn">Sign in to an account</button>
-    </div>
-    <button class="next-button" id="nextButton2" disabled>Next</button>
-</div> 
-const nextButton1 = document.getElementById('nextButton1');
-const step1 = document.getElementById('step-1');
-const step2 = document.getElementById('step-2');
-const pageLabel = document.querySelector('.page-label');
-
-nextButton1.addEventListener('click', () => {
-    // 1. Hide the first page
-    step1.style.display = 'none';
-    
-    // 2. Show the second page
-    step2.style.display = 'block';
-    
-    // 3. Update the floating label
-    pageLabel.textContent = 'Log-in Page 2';
-});
-.button-group {
+.account-actions {
     display: flex;
     gap: 20px;
-    justify-content: center;
     margin: 40px 0;
-}
-
-.action-btn {
-    flex: 1;
-    padding: 20px 10px;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-/* Blue "Create" button */
-.create-btn {
-    background-color: #D1E9FF;
-    border: 2px solid #A5D1F3;
-    color: #2D4A63;
-}
-
-/* Purple "Sign in" button */
-.signin-btn {
-    background-color: #E7D9FF;
-    border: 2px solid #D2BFF5;
-    color: #4A3A63;
-}
-
-.action-btn:hover {
-    transform: translateY(-2px);
-}
-<div id="step-3" class="page-content" style="display: none;">
-    <h1 class="welcome-title">Create your profile now!</h1>
-    
-    <div class="input-group">
-        <input type="text" id="username" placeholder="Enter Username" class="custom-input">
-        <input type="password" id="password" placeholder="Enter Password" class="custom-input">
-        <input type="password" id="retype" placeholder="Retype Password" class="custom-input">
-    </div>
-    
-    <button class="next-button" id="nextButton3" disabled>Next</button>
-</div>
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 30px 0;
-    align-items: center;
-}
-
-.custom-input {
     width: 100%;
-    max-width: 320px;
-    background-color: #FFEDBD; /* The yellow from your image */
-    border: 1px solid #EEC56A;
-    border-radius: 6px;
-    padding: 15px;
-    font-size: 16px;
-    outline: none;
-    text-align: center;
+    justify-content: center;
 }
 
-.custom-input::placeholder {
-    color: #555;
-}
-
-.custom-input:focus {
-    border-color: #d4a017;
-    box-shadow: 0 0 5px rgba(238, 197, 106, 0.5);
-}
-// Navigation from Step 2 to Step 3
-const createAccountBtn = document.querySelector('.create-btn');
-const step2 = document.getElementById('step-2');
-const step3 = document.getElementById('step-3');
-
-createAccountBtn.addEventListener('click', () => {
-    step2.style.display = 'none';
-    step3.style.display = 'block';
-    document.querySelector('.page-label').textContent = 'Log-in Page 3';
-});
-
-// Input Validation for Step 3
-const inputs = document.querySelectorAll('.custom-input');
-const nextButton3 = document.getElementById('nextButton3');
-
-inputs.forEach(input => {
-    input.addEventListener('input', () => {
-        const val1 = document.getElementById('username').value;
-        const val2 = document.getElementById('password').value;
-        const val3 = document.getElementById('retype').value;
-
-        // Enable button only if all fields are filled and passwords match
-        if (val1 && val2 && val3 && val2 === val3) {
-            nextButton3.removeAttribute('disabled');
-            nextButton3.classList.add('enabled');
-        } else {
-            nextButton3.setAttribute('disabled', 'true');
-            nextButton3.classList.remove('enabled');
-        }
-    });
-});
-<div id="step-4" class="page-content" style="display: none;">
-    <h1 class="welcome-title" style="font-size: 28px; margin-top: 40px;">Good morning!</h1>
-    <p class="helper-text" style="font-size: 24px;">
-        <span id="display-name">User</span> 😊
-    </p >
-    
-    <button class="next-button enabled" id="finishBtn" style="margin-top: 60px;">Next</button>
-</div>
-const nextButton3 = document.getElementById('nextButton3');
-const usernameInput = document.getElementById('username');
-const displayName = document.getElementById('display-name');
-const step3 = document.getElementById('step-3');
-const step4 = document.getElementById('step-4');
-
-nextButton3.addEventListener('click', () => {
-    // 1. Get the name from the input field
-    const name = usernameInput.value;
-    
-    // 2. Set the display text in Step 4
-    displayName.textContent = name ? name : "Joyce"; // Defaults to Joyce if empty
-    
-    // 3. Switch screens
-    step3.style.display = 'none';
-    step4.style.display = 'block';
-    
-    // 4. Update label
-    document.querySelector('.page-label').textContent = 'Log-in Page 4';
-});
-<div id="step-5" class="page-content" style="display: none;">
-    <nav class="tab-container">
-        <div class="tab">All Courses</div>
-        <div class="tab active">My Dashboard</div>
-        <div class="tab">Heatmap</div>
-        <div class="tab">Discussion</div>
-        <div class="tab">Account</div>
-    </nav>
-
-    <div class="dashboard-content">
-        <h2 class="section-title">All Registered Courses</h2>
-        
-        <div class="course-grid">
-            <div class="course-card">
-                < img src="https://via.placeholder.com/150x80/00bcd4/ffffff?text=Algebra" alt="Algebra">
-                <p>Algebra 101</p >
-            </div>
-            <div class="course-card">
-                < img src="https://via.placeholder.com/150x80/ffeb3b/333333?text=Music" alt="Music">
-                <p>Music 185</p >
-            </div>
-            <div class="course-card">
-                < img src="https://via.placeholder.com/150x80/3f51b5/ffffff?text=Art" alt="Art">
-                <p>Art History 103</p >
-            </div>
-            <div class="course-card">
-                < img src="https://via.placeholder.com/150x80/f44336/ffffff?text=Chinese" alt="Chinese">
-                <p>Chinese 201</p >
-            </div>
-            <div class="course-card">
-                < img src="https://via.placeholder.com/150x80/ff9800/ffffff?text=Spanish" alt="Spanish">
-                <p>Spanish 102</p >
-            </div>
-            <div class="course-card">
-                < img src="https://via.placeholder.com/150x80/4caf50/ffffff?text=Marketing" alt="Marketing">
-                <p>Marketing 108</p >
-            </div>
-        </div>
-    </div>
-</div>
-/* Dashboard Tabs */
-.tab-container {
-    display: flex;
-    background-color: #E2E2E2;
-    border-bottom: 1px solid #6C727A;
-}
-
-.tab {
+.action-card {
     flex: 1;
-    padding: 10px 5px;
-    font-size: 12px;
-    text-align: center;
-    border-right: 1px solid #6C727A;
+    max-width: 200px;
+    padding: 30px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.blue-card {
+    background-color: #d6ebff;
+    border: 1px solid #b8daff;
     color: #333;
-    cursor: pointer;
 }
 
-.tab.active {
-    background-color: #FFF9E6; /* Light yellow from your image */
-    font-weight: bold;
-    border-bottom: 2px solid #EEC56A;
+.purple-card {
+    background-color: #e5d6ff;
+    border: 1px solid #d1b8ff;
+    color: #333;
 }
 
-/* Course Grid */
-.dashboard-content {
-    padding: 20px;
-    text-align: left;
+/* Mobile fix for cards */
+@media (max-width: 600px) {
+    .account-actions { flex-direction: column; align-items: center; }
 }
+const nextBtn1 = document.getElementById('toPage2');
+const page1 = document.getElementById('page1');
+const page2 = document.getElementById('page2');
+const selectedValueSpan = document.getElementById('selectedValue');
 
-.section-title {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-.course-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    gap: 20px;
-}
-
-.course-card {
-    text-align: center;
-}
-
-.course-card img {
-    width: 100%;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.course-card p {
-    margin-top: 8px;
-    font-size: 13px;
-    font-weight: 500;
-}
-
-/* Mobile Responsiveness for Grid */
-@media (max-width: 480px) {
-    .course-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns on phones */
+nextBtn1.addEventListener('click', function() {
+    // Check if the user selected 'Student'
+    if (selectedValueSpan.innerText.trim() === "Student") {
+        // Simple fade-out/fade-in effect
+        page1.style.display = 'none';
+        page2.style.display = 'block';
+        
+        // Update the caption text below the app (optional)
+        document.querySelector('.footer-explanation').innerText = 
+            "This screen allows users to create a new account or sign in to an existing one. The simple layout helps users quickly enter the platform.";
+    } else {
+        alert("Please select 'Student' to proceed to the next demo page!");
     }
-    .tab { font-size: 10px; }
-}
-const finishBtn = document.getElementById('finishBtn');
-const step4 = document.getElementById('step-4');
-const step5 = document.getElementById('step-5');
-
-finishBtn.addEventListener('click', () => {
-    step4.style.display = 'none';
-    step5.style.display = 'block';
-    
-    // Update the floating interface label
-    document.querySelector('.page-label').textContent = 'Interface: My Dashboard';
 });
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProgressViz Interactive</title>
-    <style>
-        /* Global Styles */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-        body { background-color: #F6F6F6; background-image: radial-gradient(#d3d3d3 1px, transparent 1px); background-size: 20px 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .page-wrapper { width: 100%; max-width: 600px; position: relative; }
-        .page-label { position: absolute; top: -15px; left: 20px; background: #E2E2E2; padding: 5px 12px; border-radius: 6px; font-weight: bold; font-size: 14px; z-index: 5; }
-        .main-container { border: 1px solid #C4C4C4; border-radius: 12px; background: #FFF; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding-bottom: 20px; overflow: hidden; }
-        .card { border: 2px solid #6C727A; border-radius: 10px; margin: 40px 20px 20px; min-height: 400px; position: relative; }
-        .header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #6C727A; }
-        .logo { width: 30px; height: 25px; margin-right: 10px; background: #8ba17d; border-radius: 3px; }
-        .brand { font-size: 20px; font-weight: bold; }
-        .viz { color: #618956; }
-        
-        /* Typography */
-        .content { padding: 30px 20px; text-align: center; }
-        .title { font-size: 22px; font-weight: bold; margin-bottom: 10px; }
-        .desc { font-size: 16px; color: #444; margin-bottom: 30px; }
-        .footer-text { padding: 0 25px; font-size: 14px; color: #333; text-align: left; line-height: 1.4; }
 
-        /* Inputs & Buttons */
-        .btn-next { float: right; margin: 0 20px 20px 0; background: #F8D9D2; border: 2px solid #F1B7B0; padding: 8px 25px; border-radius: 6px; color: #71383B; cursor: not-allowed; opacity: 0.6; transition: 0.3s; }
-        .btn-next.active { opacity: 1; cursor: pointer; background: #F1B7B0; }
-        .input-box { width: 100%; max-width: 300px; background: #FFEDBD; border: 1px solid #EEC56A; padding: 12px; border-radius: 6px; margin-bottom: 10px; outline: none; text-align: center; }
-
-        /* Step Specifics */
-        .page-state { display: none; }
-        .page-state.active { display: block; }
-        
-        /* Grid & Tabs */
-        .tab-bar { display: flex; background: #E2E2E2; border-bottom: 1px solid #6C727A; }
-        .tab { flex: 1; padding: 10px 5px; font-size: 11px; cursor: pointer; border-right: 1px solid #999; text-align: center; }
-        .tab.active { background: #FFF9E6; border-bottom: 2px solid #EEC56A; font-weight: bold; }
-        .course-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; padding: 15px; }
-        .course-card img { width: 100%; border-radius: 4px; aspect-ratio: 16/9; object-fit: cover; }
-        .course-card p { font-size: 12px; margin-top: 5px; font-weight: bold; }
-
-        /* Step 2 Buttons */
-        .choice-row { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-        .choice-btn { flex: 1; padding: 20px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; }
-        .c-blue { background: #D1E9FF; border: 2px solid #A5D1F3; }
-        .c-purple { background: #E7D9FF; border: 2px solid #D2BFF5; }
-    </style>
-</head>
-<body>
-
-<div class="page-wrapper">
-    <div id="label" class="page-label">Log-in Page 1</div>
-    <div class="main-container">
-        <div class="card">
-            <div class="header">
-                <div class="logo"></div>
-                <span class="brand">Progress<span class="viz">Viz</span></span>
-            </div>
-
-            <div id="step1" class="page-state active">
-                <div class="content">
-                    <h1 class="title">Welcome to ProgressViz!</h1>
-                    <p class="desc">Your self-learning helper!</p >
-                    <select id="roleSelect" class="input-box" style="cursor:pointer">
-                        <option value="">Select Role</option>
-                        <option value="Student">Student</option>
-                        <option value="Instructor">Instructor</option>
-                    </select>
-                </div>
-                <button id="next1" class="btn-next">Next</button>
-            </div>
-
-            <div id="step2" class="page-state">
-                <div class="content">
-                    <h1 class="title">Good morning!</h1>
-                    <p class="desc">Student 4375 😄</p >
-                    <div class="choice-row">
-                        <div class="choice-btn c-blue" onclick="goToStep(3)">Create an account</div>
-                        <div class="choice-btn c-purple">Sign in to an account</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="step3" class="page-state">
-                <div class="content">
-                    <h1 class="title">Create your profile now!</h1>
-                    <input type="text" id="username" class="input-box" placeholder="Enter Username">
-                    <input type="password" class="input-box" placeholder="Enter Password">
-                    <input type="password" class="input-box" placeholder="Retype Password">
-                </div>
-                <button id="next3" class="btn-next active">Next</button>
-            </div>
-
-            <div id="step4" class="page-state">
-                <div class="content">
-                    <h1 class="title">Good morning!</h1>
-                    <p class="desc" id="greetName" style="font-size: 24px;">User 😊</p >
-                </div>
-                <button id="next4" class="btn-next active">Next</button>
-            </div>
-
-            <div id="step5" class="page-state">
-                <div class="tab-bar">
-                    <div class="tab" onclick="switchTab('all')">All Courses</div>
-                    <div class="tab active" onclick="switchTab('my')">My Dashboard</div>
-                    <div class="tab">Heatmap</div>
-                    <div class="tab">Discussion</div>
-                    <div class="tab">Account</div>
-                </div>
-                
-                <div id="myContent" class="tab-content">
-                    <div style="padding:15px; font-weight:bold;">All Registered Courses</div>
-                    <div class="course-grid">
-                        <div class="course-card">< img src="https://picsum.photos/seed/math/200/120"><p>Algebra 101</p ></div>
-                        <div class="course-card">< img src="https://picsum.photos/seed/music/200/120"><p>Music 185</p ></div>
-                        <div class="course-card">< img src="https://picsum.photos/seed/art/200/120"><p>Art History 103</p ></div>
-                    </div>
-                </div>
-
-                <div id="allContent" class="tab-content" style="display:none">
-                    <div style="padding:15px; font-weight:bold;">All Available Courses</div>
-                    <div class="course-grid">
-                        <div class="course-card">< img src="https://picsum.photos/seed/econ/200/120"><p>Economics</p ></div>
-                        <div class="course-card">< img src="https://picsum.photos/seed/psych/200/120"><p>Psychology</p ></div>
-                        <div class="course-card">< img src="https://picsum.photos/seed/physics/200/120"><p>Physics</p ></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <p id="footer" class="footer-text">This screen allows users to select their role when entering the platform.</p >
-    </div>
-</div>
-
-<script>
-    const label = document.getElementById('label');
-    const footer = document.getElementById('footer');
-
-    // Navigation logic
-    document.getElementById('roleSelect').addEventListener('change', function() {
-        document.getElementById('next1').classList.add('active');
-    });
-
-    document.getElementById('next1').onclick = () => goToStep(2);
-    document.getElementById('next3').onclick = () => {
-        document.getElementById('greetName').innerText = document.getElementById('username').value + " 😊";
-        goToStep(4);
-    };
-    document.getElementById('next4').onclick = () => goToStep(5);
-
-    function goToStep(stepNum) {
-        document.querySelectorAll('.page-state').forEach(s => s.classList.remove('active'));
-        document.getElementById('step' + stepNum).classList.add('active');
-        
-        if(stepNum < 5) {
-            label.innerText = "Log-in Page " + stepNum;
-        } else {
-            label.innerText = "Interface: My Dashboard";
-        }
-    }
-
-    function switchTab(type) {
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(t => t.classList.remove('active'));
-        
-        if(type === 'all') {
-            document.getElementById('allContent').style.display = 'block';
-            document.getElementById('myContent').style.display = 'none';
-            tabs[0].classList.add('active');
-            label.innerText = "Interface: All Courses";
-        } else {
-            document.getElementById('allContent').style.display = 'none';
-            document.getElementById('myContent').style.display = 'block';
-            tabs[1].classList.add('active');
-            label.innerText = "Interface: My Dashboard";
-        }
-    }
-</script>
-</body>
-</html>
-
-<div id="heatmapContent" class="tab-content" style="display:none">
-    <div style="padding:15px; font-weight:bold;">My Dynamic Learning Map</div>
-    
-    <div class="heatmap-layout">
-        <div class="map-container">
-            <p class="map-title">Joyce Art History 103</p >
-            < img src="https://via.placeholder.com/400x250/F0F0FF/333?text=Learning+Map+Flowchart" class="map-graphic">
-        </div>
-
-        <div class="course-sidebar">
-            <div class="sidebar-header">Select Your Course <span style="float:right">@</span></div>
-            <div class="sidebar-item active">Art History 103 <span style="float:right">✓</span></div>
-            <div class="sidebar-item">Music 185</div>
-            <div class="sidebar-item">Algebra 101</div>
-            <div class="sidebar-item">Chinese 201</div>
-            <div class="sidebar-item">Spanish 102</div>
-            <div class="sidebar-item">Marketing 108</div>
-        </div>
-    </div>
-</div>
-.heatmap-layout {
-    display: flex;
-    gap: 15px;
-    padding: 15px;
-}
-
-.map-container {
-    flex: 2;
-    background: #F9F9FF;
-    border: 1px solid #E0E0E0;
-    border-radius: 8px;
-    padding: 15px;
-    text-align: center;
-}
-
-.map-title {
-    font-family: 'Brush Script MT', cursive; /* To mimic the handwritten font */
-    font-size: 18px;
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.map-graphic {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-}
-
-/* Sidebar Styles */
-.course-sidebar {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.sidebar-header {
-    background: #BDBDBD;
-    padding: 8px;
-    font-size: 11px;
-    font-weight: bold;
-    border-radius: 4px 4px 0 0;
-}
-
-.sidebar-item {
-    background: #E0E0E0;
-    padding: 10px;
-    font-size: 11px;
-    cursor: pointer;
-    border-bottom: 1px solid #CCC;
-}
-
-.sidebar-item.active {
-    background: #757575;
-    color: white;
-}
-
-@media (max-width: 480px) {
-    .heatmap-layout { flex-direction: column; }
-}
-function switchTab(type) {
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(t => t.classList.remove('active'));
-    
-    // Hide all content first
-    document.getElementById('allContent').style.display = 'none';
-    document.getElementById('myContent').style.display = 'none';
-    document.getElementById('heatmapContent').style.display = 'none';
-    
-    if(type === 'all') {
-        document.getElementById('allContent').style.display = 'block';
-        tabs[0].classList.add('active');
-        label.innerText = "Interface: All Courses";
-    } else if (type === 'my') {
-        document.getElementById('myContent').style.display = 'block';
-        tabs[1].classList.add('active');
-        label.innerText = "Interface: My Dashboard";
-    } else if (type === 'heatmap') {
-        document.getElementById('heatmapContent').style.display = 'block';
-        tabs[2].classList.add('active');
-        label.innerText = "Interface: Heatmap";
-    }
-}
-
-<div id="discussionContent" class="tab-content" style="display:none">
-    <div style="padding:15px; font-weight:bold;">My Discussion Board</div>
-    
-    <div class="discussion-layout">
-        <div class="disc-card main-card">
-            <div class="card-info">
-                <h3>View instructors' feedback</h3>
-                <p>Your instructor has given a new feedback! Check this and review for getting a better score next time!</p >
-                <button class="select-course-btn">select your course</button>
-            </div>
-            < img src="https://via.placeholder.com/150?text=Feedback+Icon" class="disc-graphic">
-        </div>
-
-        <div class="side-cards">
-            <div class="disc-card side-card">
-                <div class="card-info">
-                    <h3>Compete with your peers</h3>
-                    <p>Lets compete with your peers in this class! This helps strengthen your memory :)</p >
-                </div>
-                < img src="https://via.placeholder.com/60x40?text=Peer" class="side-img">
-            </div>
-
-            <div class="disc-card side-card">
-                <div class="card-info">
-                    <h3>View your ranking</h3>
-                    <p>Here's the learning challenge arena! See your ranking here :)</p >
-                    <button class="select-course-btn">select your course</button>
-                </div>
-                <div class="sticky-note-placeholder"></div>
-            </div>
-        </div>
-    </div>
-</div>
-/* Discussion Layout */
-.discussion-layout {
-    display: flex;
-    gap: 15px;
-    padding: 15px;
-}
-
-.disc-card {
-    background: #FFFFFF;
-    border: 1px solid #E0E0E0;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    text-align: left;
-}
-
-.main-card { flex: 1.2; flex-direction: column; justify-content: space-between; }
-.side-cards { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-.side-card { flex: 1; padding: 10px; }
-
-.disc-card h3 { font-size: 16px; margin-bottom: 8px; color: #1A1A1A; }
-.disc-card p { font-size: 11px; line-height: 1.3; color: #555; margin-bottom: 12px; }
-
-.select-course-btn {
-    background: #FFF;
-    border: 1px solid #333;
-    padding: 5px 10px;
-    font-size: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.disc-graphic { width: 100%; max-width: 140px; margin-top: 10px; }
-.sticky-note-placeholder { width: 50px; height: 50px; background: #FFF38E; transform: rotate(5deg); box-shadow: 2px 2px 5px rgba(0,0,0,0.1); margin-left: 10px; }
-
-/* Mobile adaptation for Discussion */
-@media (max-width: 480px) {
-    .discussion-layout { flex-direction: column; }
-}
-function switchTab(type) {
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(t => t.classList.remove('active'));
-    
-    // Hide all contents
-    const contents = ['allContent', 'myContent', 'heatmapContent', 'discussionContent'];
-    contents.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.style.display = 'none';
-    });
-    
-    // Show selected and update label
-    if(type === 'discussion') {
-        document.getElementById('discussionContent').style.display = 'block';
-        tabs[3].classList.add('active');
-        label.innerText = "Interface: Discussion Board";
-    } 
-    // ... add the other if/else logic from previous steps here ...
-}
