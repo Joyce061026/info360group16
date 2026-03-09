@@ -3,430 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProgressViz - Login Role Selection</title>
+    <title>ProgressViz Interactive</title>
     <style>
-        /* Base styles and variables */
         :root {
             --bg-canvas: #f6f6f6;
             --main-container-bg: #ffffff;
-            --main-container-border: #e0e0e0;
-            --text-heading: #333333;
             --text-body: #666666;
-            --text-grey-faded: #999999;
-            --input-select-bg: #fff1c7; /* Pale yellow */
-            --input-select-border: #f8db7b;
-            --input-select-text: #666666;
-            --dropdown-bg: #e0e0e0;
-            --dropdown-border: #cccccc;
+            --input-select-bg: #fff1c7;
             --btn-next-bg: #ffd6d6;
-            --btn-next-border: #ffb8b8;
             --btn-next-text: #8b3c3c;
             --viz-green: #4CAF50;
-            --viz-bar-1: #d2c88d; /* Muted yellow/brown */
-            --viz-bar-2: #8cb369; /* Muted green */
-            --viz-bar-3: #5c8e5e; /* Deeper green */
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-family: sans-serif;
             background-color: var(--bg-canvas);
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            color: var(--text-heading);
-            overflow-x: hidden;
+            margin: 0;
         }
 
-        /* The overall dotted canvas effect */
+        /* Dotted background */
         .canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-image: radial-gradient(#d0d0d0 1px, transparent 1px);
             background-size: 20px 20px;
             z-index: -1;
         }
 
-        /* Screen Wrapper */
         .screen-container {
             width: 90%;
-            max-width: 800px;
-            background-color: var(--main-container-bg);
-            border: 1px solid var(--main-container-border);
+            max-width: 600px;
+            background: var(--main-container-bg);
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-top: 50px;
+            padding: 30px;
             position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        /* Figma Label */
         .page-label {
             position: absolute;
-            top: 2px;
-            left: 20px;
-            font-family: monospace;
-            background-color: #e0e0e0;
-            color: #444;
-            padding: 4px 10px;
+            top: -12px; left: 20px;
+            background: #e0e0e0;
+            padding: 2px 8px;
+            font-size: 12px;
             border-radius: 4px;
-            font-size: 14px;
         }
 
-        /* Inner App Window Simulation */
+        /* App Frame */
         .app-frame {
-            border: 1px solid var(--text-grey-faded);
-            padding: 40px;
+            border: 1px solid #999;
+            padding: 20px;
             border-radius: 4px;
-            margin-bottom: 24px;
-            position: relative;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Header (Logo) */
         .app-header {
             display: flex;
             align-items: center;
-            border-bottom: 1px solid var(--text-grey-faded);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
 
-        /* Vector Logo Simulation */
-        .viz-logo {
-            display: flex;
-            align-items: flex-end;
-            gap: 2px;
-            margin-right: 10px;
-        }
-        .logo-bar { width: 6px; border-radius: 1px; }
-        .bar1 { height: 16px; background-color: var(--viz-bar-1); }
-        .bar2 { height: 22px; background-color: var(--viz-bar-2); }
-        .bar3 { height: 28px; background-color: var(--viz-bar-3); }
+        .viz-logo { font-weight: bold; font-size: 20px; }
+        .viz-color { color: var(--viz-green); }
 
-        .viz-title {
-            font-size: 22px;
-            color: #333;
-            font-weight: bold;
-        }
-        .viz-title-viz { color: var(--viz-green); font-weight: bold;}
+        /* Typography */
+        .welcome-msg { margin: 20px 0 5px; text-align: center; }
+        .helper-msg { color: var(--text-body); text-align: center; margin-bottom: 30px; }
 
-        /* App Content */
-        .app-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .welcome-msg { font-size: 1.5rem; font-weight: 700; margin: 0; }
-        .helper-msg { font-size: 1rem; color: var(--text-body); margin: 5px 0 30px 0; }
-
-        /* --- Interactive Dropdown Styling --- */
-        .role-selector-container {
+        /* Page 1 Specific: Dropdown */
+        .role-selector {
+            background: var(--input-select-bg);
+            border: 1px solid #f8db7b;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 200px;
+            margin: 0 auto 40px;
             position: relative;
-            width: 100%;
-            max-width: 300px; /* Matching Figma proportional width */
-            margin-bottom: 30px;
         }
 
-        /* The input itself (main display) */
-        .custom-select-trigger {
-            background-color: var(--input-select-bg);
-            border: 1px solid var(--input-select-border);
-            color: var(--input-select-text);
-            padding: 12px 15px;
-            border-radius: 6px;
-            width: 100%;
-            cursor: pointer;
-            font-size: 1.1rem;
-            text-align: left;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-        }
-        .select-icon { color: var(--text-body); font-size: 1.2rem; margin-left: auto;}
-
-        /* The hidden actual select for form submission (optional) */
-        .hidden-select { display: none; }
-
-        /* The options dropdown menu */
-        .custom-options-container {
+        .options-menu {
             position: absolute;
-            top: calc(100% + 1px);
-            left: 0;
-            width: 100%;
-            background-color: var(--dropdown-bg);
-            border: 1px solid var(--dropdown-border);
-            border-radius: 6px;
-            overflow: hidden;
-            display: none; /* Hidden by default */
-            z-index: 10;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .role-selector-container.open .custom-options-container {
-            display: block;
-        }
-
-        .custom-option {
-            padding: 12px 15px;
-            font-size: 1.1rem;
-            color: #333;
-            cursor: pointer;
-            text-align: left;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .custom-option:hover { background-color: #d8d8d8; }
-        .custom-option.selected { font-weight: bold; background-color: #f1f1f1; }
-        
-        /* The specific tick mark style */
-        .tick-icon {
+            top: 100%; left: 0; width: 100%;
+            background: #e0e0e0;
+            border: 1px solid #ccc;
             display: none;
-            color: #333; /* Darker to match Figma */
-            width: 12px; height: 12px;
-            margin-right: -4px;
+            z-index: 10;
         }
-        .custom-option.selected .tick-icon {
-            display: block;
+        .options-menu div { padding: 10px; border-bottom: 1px solid #ccc; }
+        .options-menu div:hover { background: #d0d0d0; }
+
+        /* Page 2 Specific: Action Cards */
+        .account-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
         }
 
-        /* Button */
-        .btn-container {
-            width: 100%;
-            max-width: 300px;
-            display: flex;
-            justify-content: flex-end;
-            margin-top: auto; /* Push to bottom for desktop view, but need special handling */
+        .action-card {
+            flex: 1;
+            padding: 30px 10px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
         }
-        
+        .action-card:hover { transform: translateY(-3px); }
+        .blue-card { background: #d6ebff; border: 1px solid #b8daff; }
+        .purple-card { background: #e5d6ff; border: 1px solid #d1b8ff; }
+
+        /* Common Button */
         .btn-next {
-            background-color: var(--btn-next-bg);
-            border: 1px solid var(--btn-next-border);
+            align-self: flex-end;
+            margin-top: auto;
+            background: var(--btn-next-bg);
+            border: 1px solid #ffb8b8;
             color: var(--btn-next-text);
-            padding: 8px 30px;
-            font-size: 0.9rem;
+            padding: 8px 25px;
             border-radius: 4px;
             cursor: pointer;
-            transition: background 0.2s;
-            font-family: inherit;
-        }
-        .btn-next:hover { background-color: #ffcccc; }
-        
-        /* Footer/Explanation Area */
-        .footer-explanation {
-            font-size: 1rem;
-            color: var(--text-body);
-            line-height: 1.6;
-            margin: 0;
         }
 
-        /* --- RESPONSIVE MOBILE ADJUSTMENTS --- */
-        @media (max-width: 600px) {
-            .screen-container { width: 95%; padding: 15px; margin-top: 20px; }
-            .page-label { left: 10px; top: 0; font-size: 12px; }
-            .app-frame { padding: 25px 15px; }
-            .viz-title { font-size: 18px; }
-            .welcome-msg { font-size: 1.2rem; }
-            .helper-msg { font-size: 0.9rem; margin-bottom: 20px;}
-            .custom-select-trigger, .custom-option { font-size: 1rem; padding: 10px; }
-            .btn-next { width: 100%; font-size: 1rem; padding: 12px; }
-            
-            /* Center the logo in mobile */
-            .app-header {
-                justify-content: center;
-            }
+        /* Footer Text */
+        .footer-explanation {
+            margin-top: 20px;
+            color: #444;
+            font-size: 14px;
+            line-height: 1.5;
         }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div class="canvas"></div>
+
     <div class="screen-container">
-        <span class="page-label">Log-in Page 1</span>
+        <div id="pageLabel" class="page-label">Log-in Page 1</div>
         
         <div class="app-frame">
-            <header class="app-header">
-                <div class="viz-logo">
-                    <div class="logo-bar bar1"></div>
-                    <div class="logo-bar bar2"></div>
-                    <div class="logo-bar bar3"></div>
-                </div>
-                <span class="viz-title">Progress<span class="viz-title-viz">Viz</span></span>
-            </header>
+            <div class="app-header">
+                <span class="viz-logo">📊 Progress<span class="viz-color">Viz</span></span>
+            </div>
 
-            <main class="app-content">
+            <div id="content1">
                 <h2 class="welcome-msg">Welcome to ProgressViz!</h2>
                 <p class="helper-msg">Your self-learning helper!</p >
                 
-                <div class="role-selector-container" id="roleSelector">
-                    <div class="custom-select-trigger" onclick="toggleDropdown()">
-                        <span id="selectedValue">Select</span>
-                        <span class="select-icon">@</span>
-                    </div>
-                    <div class="custom-options-container">
-                        <div class="custom-option selected" data-value="student" onclick="selectRole(this)">
-                            <span>Student</span>
-                            <svg class="tick-icon" viewBox="0 0 10 10">
-                                <path fill="none" stroke="currentColor" stroke-width="2" d="M1 5l3 3 5-6"/>
-                            </svg>
-                        </div>
-                        <div class="custom-option" data-value="instructor" onclick="selectRole(this)">
-                            <span>Instructor</span>
-                            <svg class="tick-icon" viewBox="0 0 10 10">
-                                <path fill="none" stroke="currentColor" stroke-width="2" d="M1 5l3 3 5-6"/>
-                            </svg>
-                        </div>
+                <div class="role-selector" onclick="toggleMenu()">
+                    <span id="selectedRole">Select</span>
+                    <div id="menu" class="options-menu">
+                        <div onclick="setRole('Student')">Student</div>
+                        <div onclick="setRole('Instructor')">Instructor</div>
                     </div>
                 </div>
+            </div>
 
-                <div class="btn-container">
-                    <button class="btn-next">Next</button>
+            <div id="content2" class="hidden">
+                <h2 class="welcome-msg">Good morning!</h2>
+                <p class="helper-msg">Student 4375 😄</p >
+                
+                <div class="account-actions">
+                    <div class="action-card blue-card">Create an account</div>
+                    <div class="action-card purple-card">Sign in to an account</div>
                 </div>
-            </main>
+            </div>
+
+            <button class="btn-next" onclick="handleNext()">Next</button>
         </div>
-        
-        <p class="footer-explanation">
-            This screen allows users to select their role when entering the platform. Users can choose whether they are a student or an instructor. This helps the system provide the correct interface and learning tools for different types of users.
+
+        <p id="footerText" class="footer-explanation">
+            This screen allows users to select their role when entering the platform. This helps the system provide the correct interface.
         </p >
     </div>
 
     <script>
-        const roleSelector = document.getElementById('roleSelector');
-        const selectedValueSpan = document.getElementById('selectedValue');
+        let currentStep = 1;
 
-        function toggleDropdown() {
-            roleSelector.classList.toggle('open');
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
-        function selectRole(element) {
-            // 1. Update the display value
-            const roleName = element.querySelector('span').innerText;
-            selectedValueSpan.innerText = roleName;
-
-            // 2. Clear old selection
-            document.querySelectorAll('.custom-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-
-            // 3. Mark current as selected
-            element.classList.remove('selected'); // Required to re-trigger transition if needed
-            element.classList.add('selected');
-
-            // 4. Close the dropdown
-            roleSelector.classList.remove('open');
-            
-            // Log selection (useful for debugging)
-            console.log('Selected Role:', element.getAttribute('data-value'));
+        function setRole(role) {
+            document.getElementById('selectedRole').innerText = role;
+            event.stopPropagation(); // 防止触发父级的 toggleMenu
+            document.getElementById('menu').style.display = 'none';
         }
 
-        // Close dropdown when clicking outside
-        window.addEventListener('click', function(e){   
-            if (!roleSelector.contains(e.target)){
-                roleSelector.classList.remove('open');
+        function handleNext() {
+            if (currentStep === 1) {
+                const role = document.getElementById('selectedRole').innerText;
+                if (role === "Student") {
+                    // 切换到第二页
+                    document.getElementById('content1').classList.add('hidden');
+                    document.getElementById('content2').classList.remove('hidden');
+                    
+                    // 更新外部UI
+                    document.getElementById('pageLabel').innerText = "Log-in Page 2";
+                    document.getElementById('footerText').innerText = "This screen allows users to create a new account or sign in to an existing one. The simple layout helps users quickly enter the platform.";
+                    
+                    currentStep = 2;
+                } else {
+                    alert("Please select 'Student' to see the next page of this prototype.");
+                }
+            } else {
+                alert("This is the end of the current demo flow!");
             }
-        });
+        }
     </script>
 </body>
 </html>
 
-<div id="page1" class="app-frame">
-    <main class="app-content">
-        <h2 class="welcome-msg">Welcome to ProgressViz!</h2>
-        <p class="helper-msg">Your self-learning helper!</p >
-        
-        <div class="role-selector-container" id="roleSelector">
-            </div>
 
-        <div class="btn-container">
-            <button id="toPage2" class="btn-next">Next</button>
-        </div>
-    </main>
-</div>
 
-<div id="page2" class="app-frame" style="display: none;">
-    <header class="app-header">
-        </header>
-    <main class="app-content">
-        <h2 class="welcome-msg">Good morning!</h2>
-        <p class="helper-msg">Student 4375 😄</p >
-        
-        <div class="account-actions">
-            <div class="action-card blue-card">Create an account</div>
-            <div class="action-card purple-card">Sign in to an account</div>
-        </div>
-
-        <div class="btn-container">
-            <button class="btn-next">Next</button>
-        </div>
-    </main>
-</div>
-.account-actions {
-    display: flex;
-    gap: 20px;
-    margin: 40px 0;
-    width: 100%;
-    justify-content: center;
-}
-
-.action-card {
-    flex: 1;
-    max-width: 200px;
-    padding: 30px 15px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.action-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.blue-card {
-    background-color: #d6ebff;
-    border: 1px solid #b8daff;
-    color: #333;
-}
-
-.purple-card {
-    background-color: #e5d6ff;
-    border: 1px solid #d1b8ff;
-    color: #333;
-}
-
-/* Mobile fix for cards */
-@media (max-width: 600px) {
-    .account-actions { flex-direction: column; align-items: center; }
-}
-const nextBtn1 = document.getElementById('toPage2');
-const page1 = document.getElementById('page1');
-const page2 = document.getElementById('page2');
-const selectedValueSpan = document.getElementById('selectedValue');
-
-nextBtn1.addEventListener('click', function() {
-    // Check if the user selected 'Student'
-    if (selectedValueSpan.innerText.trim() === "Student") {
-        // Simple fade-out/fade-in effect
-        page1.style.display = 'none';
-        page2.style.display = 'block';
-        
-        // Update the caption text below the app (optional)
-        document.querySelector('.footer-explanation').innerText = 
-            "This screen allows users to create a new account or sign in to an existing one. The simple layout helps users quickly enter the platform.";
-    } else {
-        alert("Please select 'Student' to proceed to the next demo page!");
-    }
-});
 
 
