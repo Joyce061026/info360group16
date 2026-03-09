@@ -3,145 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProgressViz Interactive</title>
+    <title>ProgressViz Interactive Demo</title>
     <style>
         :root {
             --bg-canvas: #f6f6f6;
             --main-container-bg: #ffffff;
             --text-body: #666666;
-            --input-select-bg: #fff1c7;
+            --input-yellow: #fff1c7;
+            --input-border: #f8db7b;
             --btn-next-bg: #ffd6d6;
             --btn-next-text: #8b3c3c;
             --viz-green: #4CAF50;
         }
 
-        body {
-            font-family: sans-serif;
-            background-color: var(--bg-canvas);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
+        body { font-family: sans-serif; background-color: var(--bg-canvas); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(#d0d0d0 1px, transparent 1px); background-size: 20px 20px; z-index: -1; }
 
-        /* Dotted background */
-        .canvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(#d0d0d0 1px, transparent 1px);
-            background-size: 20px 20px;
-            z-index: -1;
-        }
+        .screen-container { width: 90%; max-width: 600px; background: var(--main-container-bg); border: 1px solid #e0e0e0; border-radius: 8px; padding: 30px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .page-label { position: absolute; top: -12px; left: 20px; background: #e0e0e0; padding: 2px 8px; font-size: 12px; border-radius: 4px; font-family: monospace; }
 
-        .screen-container {
-            width: 90%;
-            max-width: 600px;
-            background: var(--main-container-bg);
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 30px;
-            position: relative;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .page-label {
-            position: absolute;
-            top: -12px; left: 20px;
-            background: #e0e0e0;
-            padding: 2px 8px;
-            font-size: 12px;
-            border-radius: 4px;
-        }
-
-        /* App Frame */
-        .app-frame {
-            border: 1px solid #999;
-            padding: 20px;
-            border-radius: 4px;
-            min-height: 350px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .app-header {
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
+        /* App Window */
+        .app-frame { border: 1px solid #999; padding: 25px; border-radius: 4px; min-height: 380px; display: flex; flex-direction: column; background: white; }
+        .app-header { display: flex; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
         .viz-logo { font-weight: bold; font-size: 20px; }
         .viz-color { color: var(--viz-green); }
 
-        /* Typography */
-        .welcome-msg { margin: 20px 0 5px; text-align: center; }
-        .helper-msg { color: var(--text-body); text-align: center; margin-bottom: 30px; }
+        /* Content Areas */
+        .welcome-msg { margin: 10px 0 5px; text-align: center; font-size: 1.4rem; }
+        .helper-msg { color: var(--text-body); text-align: center; margin-bottom: 25px; font-size: 1rem; }
 
-        /* Page 1 Specific: Dropdown */
-        .role-selector {
-            background: var(--input-select-bg);
-            border: 1px solid #f8db7b;
-            padding: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 200px;
-            margin: 0 auto 40px;
-            position: relative;
-        }
-
-        .options-menu {
-            position: absolute;
-            top: 100%; left: 0; width: 100%;
-            background: #e0e0e0;
-            border: 1px solid #ccc;
-            display: none;
-            z-index: 10;
-        }
-        .options-menu div { padding: 10px; border-bottom: 1px solid #ccc; }
+        /* Page 1: Dropdown */
+        .role-selector { background: var(--input-yellow); border: 1px solid var(--input-border); padding: 12px; border-radius: 6px; cursor: pointer; width: 220px; margin: 0 auto; position: relative; }
+        .options-menu { position: absolute; top: 100%; left: 0; width: 100%; background: #e0e0e0; border: 1px solid #ccc; display: none; z-index: 10; }
+        .options-menu div { padding: 10px; border-bottom: 1px solid #bbb; }
         .options-menu div:hover { background: #d0d0d0; }
 
-        /* Page 2 Specific: Action Cards */
-        .account-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin: 20px 0;
-        }
+        /* Page 2: Action Cards */
+        .account-actions { display: flex; gap: 15px; justify-content: center; margin: 20px 0; }
+        .action-card { flex: 1; padding: 35px 10px; text-align: center; border-radius: 8px; cursor: pointer; font-size: 14px; border: 1px solid transparent; transition: 0.2s; }
+        .action-card.selected { border: 2px solid #666; transform: scale(1.05); }
+        .blue-card { background: #d6ebff; border-color: #b8daff; }
+        .purple-card { background: #e5d6ff; border-color: #d1b8ff; }
 
-        .action-card {
-            flex: 1;
-            padding: 30px 10px;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .action-card:hover { transform: translateY(-3px); }
-        .blue-card { background: #d6ebff; border: 1px solid #b8daff; }
-        .purple-card { background: #e5d6ff; border: 1px solid #d1b8ff; }
+        /* Page 3: Inputs */
+        .input-group { display: flex; flex-direction: column; gap: 12px; align-items: center; width: 100%; }
+        .app-input { background: var(--input-yellow); border: 1px solid var(--input-border); padding: 12px; border-radius: 6px; width: 80%; max-width: 300px; font-size: 14px; outline: none; }
 
-        /* Common Button */
-        .btn-next {
-            align-self: flex-end;
-            margin-top: auto;
-            background: var(--btn-next-bg);
-            border: 1px solid #ffb8b8;
-            color: var(--btn-next-text);
-            padding: 8px 25px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* Footer Text */
-        .footer-explanation {
-            margin-top: 20px;
-            color: #444;
-            font-size: 14px;
-            line-height: 1.5;
-        }
+        /* Button & Footer */
+        .btn-next { align-self: flex-end; margin-top: auto; background: var(--btn-next-bg); border: 1px solid #ffb8b8; color: var(--btn-next-text); padding: 10px 30px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn-next:hover { background: #ffc4c4; }
+        .footer-explanation { margin-top: 25px; color: #444; font-size: 15px; line-height: 1.6; }
 
         .hidden { display: none !important; }
     </style>
@@ -157,10 +68,9 @@
                 <span class="viz-logo">📊 Progress<span class="viz-color">Viz</span></span>
             </div>
 
-            <div id="content1">
+            <div id="step1">
                 <h2 class="welcome-msg">Welcome to ProgressViz!</h2>
                 <p class="helper-msg">Your self-learning helper!</p >
-                
                 <div class="role-selector" onclick="toggleMenu()">
                     <span id="selectedRole">Select</span>
                     <div id="menu" class="options-menu">
@@ -170,17 +80,25 @@
                 </div>
             </div>
 
-            <div id="content2" class="hidden">
+            <div id="step2" class="hidden">
                 <h2 class="welcome-msg">Good morning!</h2>
                 <p class="helper-msg">Student 4375 😄</p >
-                
                 <div class="account-actions">
-                    <div class="action-card blue-card">Create an account</div>
-                    <div class="action-card purple-card">Sign in to an account</div>
+                    <div id="createBtn" class="action-card blue-card" onclick="selectAction('create')">Create an account</div>
+                    <div id="signBtn" class="action-card purple-card" onclick="selectAction('sign')">Sign in to an account</div>
                 </div>
             </div>
 
-            <button class="btn-next" onclick="handleNext()">Next</button>
+            <div id="step3" class="hidden">
+                <h2 class="welcome-msg">Create your profile now!</h2>
+                <div class="input-group">
+                    <input type="text" class="app-input" placeholder="Enter Username">
+                    <input type="password" class="app-input" placeholder="Enter Password">
+                    <input type="password" class="app-input" placeholder="Retype Password">
+                </div>
+            </div>
+
+            <button class="btn-next" onclick="navigate()">Next</button>
         </div>
 
         <p id="footerText" class="footer-explanation">
@@ -190,6 +108,7 @@
 
     <script>
         let currentStep = 1;
+        let selectedActionType = null;
 
         function toggleMenu() {
             const menu = document.getElementById('menu');
@@ -198,33 +117,54 @@
 
         function setRole(role) {
             document.getElementById('selectedRole').innerText = role;
-            event.stopPropagation(); // 防止触发父级的 toggleMenu
             document.getElementById('menu').style.display = 'none';
+            event.stopPropagation();
         }
 
-        function handleNext() {
+        function selectAction(type) {
+            selectedActionType = type;
+            document.getElementById('createBtn').classList.remove('selected');
+            document.getElementById('signBtn').classList.remove('selected');
+            document.getElementById(type + 'Btn').classList.add('selected');
+        }
+
+        function navigate() {
             if (currentStep === 1) {
-                const role = document.getElementById('selectedRole').innerText;
-                if (role === "Student") {
-                    // 切换到第二页
-                    document.getElementById('content1').classList.add('hidden');
-                    document.getElementById('content2').classList.remove('hidden');
-                    
-                    // 更新外部UI
-                    document.getElementById('pageLabel').innerText = "Log-in Page 2";
-                    document.getElementById('footerText').innerText = "This screen allows users to create a new account or sign in to an existing one. The simple layout helps users quickly enter the platform.";
-                    
-                    currentStep = 2;
+                if (document.getElementById('selectedRole').innerText === "Student") {
+                    showStep(2, "Log-in Page 2", "This screen allows users to create a new account or sign in to an existing one.");
                 } else {
-                    alert("Please select 'Student' to see the next page of this prototype.");
+                    alert("Please select 'Student' to continue the demo.");
                 }
-            } else {
-                alert("This is the end of the current demo flow!");
+            } 
+            else if (currentStep === 2) {
+                if (selectedActionType === 'create') {
+                    showStep(3, "Log-in Page 3", "This screen allows new users to create their personal account. Students enter a username and password to set up their profile.");
+                } else {
+                    alert("Click 'Create an account' to see Page 3.");
+                }
             }
+            else {
+                alert("Profile Created! End of Demo.");
+            }
+        }
+
+        function showStep(stepNum, label, footer) {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            
+            document.getElementById('step' + stepNum).classList.remove('hidden');
+            document.getElementById('pageLabel').innerText = label;
+            document.getElementById('footerText').innerText = footer;
+            currentStep = stepNum;
         }
     </script>
 </body>
 </html>
+
+
+
+
 
 
 
