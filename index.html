@@ -30,7 +30,9 @@
 
         /* Content Areas */
         .welcome-msg { margin: 10px 0 5px; text-align: center; font-size: 1.4rem; }
+        .welcome-msg-large { font-size: 2rem; margin-top: 40px; }
         .helper-msg { color: var(--text-body); text-align: center; margin-bottom: 25px; font-size: 1rem; }
+        .helper-msg-name { font-size: 1.5rem; color: #333; font-weight: bold; margin-top: 0; }
 
         /* Page 1: Dropdown */
         .role-selector { background: var(--input-yellow); border: 1px solid var(--input-border); padding: 12px; border-radius: 6px; cursor: pointer; width: 220px; margin: 0 auto; position: relative; }
@@ -92,10 +94,15 @@
             <div id="step3" class="hidden">
                 <h2 class="welcome-msg">Create your profile now!</h2>
                 <div class="input-group">
-                    <input type="text" class="app-input" placeholder="Enter Username">
-                    <input type="password" class="app-input" placeholder="Enter Password">
-                    <input type="password" class="app-input" placeholder="Retype Password">
+                    <input type="text" id="usernameInput" class="app-input" placeholder="Enter Username">
+                    <input type="password" id="passInput" class="app-input" placeholder="Enter Password">
+                    <input type="password" id="retypeInput" class="app-input" placeholder="Retype Password">
                 </div>
+            </div>
+
+            <div id="step4" class="hidden">
+                <h2 class="welcome-msg welcome-msg-large">Good morning!</h2>
+                <p id="displayName" class="helper-msg helper-msg-name">User 😊</p >
             </div>
 
             <button class="btn-next" onclick="navigate()">Next</button>
@@ -133,26 +140,42 @@
                 if (document.getElementById('selectedRole').innerText === "Student") {
                     showStep(2, "Log-in Page 2", "This screen allows users to create a new account or sign in to an existing one.");
                 } else {
-                    alert("Please select 'Student' to continue the demo.");
+                    alert("Please select 'Student' to continue.");
                 }
             } 
             else if (currentStep === 2) {
                 if (selectedActionType === 'create') {
-                    showStep(3, "Log-in Page 3", "This screen allows new users to create their personal account. Students enter a username and password to set up their profile.");
+                    showStep(3, "Log-in Page 3", "Students enter a username and password to set up their profile.");
                 } else {
-                    alert("Click 'Create an account' to see Page 3.");
+                    alert("Select 'Create an account' to proceed.");
+                }
+            }
+            else if (currentStep === 3) {
+                const user = document.getElementById('usernameInput').value;
+                const p1 = document.getElementById('passInput').value;
+                const p2 = document.getElementById('retypeInput').value;
+
+                if (!user) {
+                    alert("Please enter a username.");
+                } else if (p1 !== p2 || p1 === "") {
+                    alert("Passwords do not match or are empty!");
+                } else {
+                    // Success! Pass data to Page 4
+                    document.getElementById('displayName').innerText = user + " 😊";
+                    showStep(4, "Log-in Page 4", "This screen greets the user after logging in. It provides a personalized welcome message.");
                 }
             }
             else {
-                alert("Profile Created! End of Demo.");
+                alert("Welcome to the platform, " + document.getElementById('usernameInput').value + "!");
             }
         }
 
         function showStep(stepNum, label, footer) {
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('step3').classList.add('hidden');
-            
+            // Hide all
+            for(let i=1; i<=4; i++) {
+                document.getElementById('step' + i).classList.add('hidden');
+            }
+            // Show target
             document.getElementById('step' + stepNum).classList.remove('hidden');
             document.getElementById('pageLabel').innerText = label;
             document.getElementById('footerText').innerText = footer;
