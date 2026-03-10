@@ -14,43 +14,58 @@
             --btn-next-bg: #ffd6d6;
             --btn-next-text: #8b3c3c;
             --viz-green: #4CAF50;
-            --tab-bg: #e0e0e0;
         }
 
         body { font-family: sans-serif; background-color: var(--bg-canvas); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(#d0d0d0 1px, transparent 1px); background-size: 20px 20px; z-index: -1; }
 
-        .screen-container { width: 95%; max-width: 800px; background: var(--main-container-bg); border: 1px solid #e0e0e0; border-radius: 8px; padding: 30px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: max-width 0.3s; }
+        .screen-container { width: 90%; max-width: 600px; background: var(--main-container-bg); border: 1px solid #e0e0e0; border-radius: 8px; padding: 30px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: max-width 0.4s ease; }
         .page-label { position: absolute; top: -12px; left: 20px; background: #e0e0e0; padding: 2px 8px; font-size: 12px; border-radius: 4px; font-family: monospace; }
 
         /* App Window */
-        .app-frame { border: 1px solid #999; padding: 20px; border-radius: 4px; min-height: 450px; display: flex; flex-direction: column; background: white; }
-        .app-header { display: flex; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 15px; }
+        .app-frame { border: 1px solid #999; padding: 25px; border-radius: 4px; min-height: 380px; display: flex; flex-direction: column; background: white; }
+        .app-header { display: flex; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
         .viz-logo { font-weight: bold; font-size: 20px; }
         .viz-color { color: var(--viz-green); }
 
-        /* Navigation Tabs (Page 5) */
+        /* General Typography */
+        .welcome-msg { margin: 10px 0 5px; text-align: center; font-size: 1.4rem; }
+        .welcome-msg-large { font-size: 2rem; margin-top: 40px; }
+        .helper-msg { color: var(--text-body); text-align: center; margin-bottom: 25px; font-size: 1rem; }
+        .helper-msg-name { font-size: 1.5rem; color: #333; font-weight: bold; margin-top: 0; }
+
+        /* Page 1: Dropdown */
+        .role-selector { background: var(--input-yellow); border: 1px solid var(--input-border); padding: 12px; border-radius: 6px; cursor: pointer; width: 220px; margin: 0 auto; position: relative; }
+        .options-menu { position: absolute; top: 100%; left: 0; width: 100%; background: #e0e0e0; border: 1px solid #ccc; display: none; z-index: 10; }
+        .options-menu div { padding: 10px; border-bottom: 1px solid #bbb; }
+        .options-menu div:hover { background: #d0d0d0; }
+
+        /* Page 2: Action Cards */
+        .account-actions { display: flex; gap: 15px; justify-content: center; margin: 20px 0; }
+        .action-card { flex: 1; padding: 35px 10px; text-align: center; border-radius: 8px; cursor: pointer; font-size: 14px; border: 1px solid transparent; transition: 0.2s; }
+        .action-card.selected { border: 2px solid #666; transform: scale(1.05); }
+        .blue-card { background: #d6ebff; border-color: #b8daff; }
+        .purple-card { background: #e5d6ff; border-color: #d1b8ff; }
+
+        /* Page 3: Inputs */
+        .input-group { display: flex; flex-direction: column; gap: 12px; align-items: center; width: 100%; }
+        .app-input { background: var(--input-yellow); border: 1px solid var(--input-border); padding: 12px; border-radius: 6px; width: 80%; max-width: 300px; font-size: 14px; outline: none; }
+
+        /* Page 5: Dashboard Specifics */
         .nav-tabs { display: flex; gap: 2px; margin-bottom: 20px; }
-        .tab { background: var(--tab-bg); border: 1px solid #ccc; padding: 8px 15px; font-size: 13px; cursor: pointer; flex: 1; text-align: center; border-radius: 4px 4px 0 0; }
+        .tab { background: #e0e0e0; border: 1px solid #ccc; padding: 8px 12px; font-size: 0.8rem; cursor: pointer; flex: 1; text-align: center; }
         .tab.active { background: var(--input-yellow); border-bottom: none; font-weight: bold; }
+        
+        .dashboard-title { text-align: left; font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; }
+        .course-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .course-card-item { text-align: center; }
+        .course-thumb { width: 100%; height: 80px; background: #eee; border-radius: 4px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #999; }
+        .course-title { font-size: 0.8rem; font-weight: bold; }
 
-        /* Course Grid (Page 5) */
-        .course-section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; text-align: left; }
-        .course-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
-        .course-card { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .course-img { width: 100%; height: 80px; background: #eee; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #999; overflow: hidden; }
-        .course-img img { width: 100%; height: 100%; object-fit: cover; }
-        .course-name { font-size: 13px; font-weight: 500; }
-
-        /* Page 1-4 Styles (Omitted for brevity, but kept in logic) */
-        .welcome-msg { margin: 20px 0 5px; text-align: center; font-size: 1.4rem; }
-        .helper-msg { color: var(--text-body); text-align: center; margin-bottom: 25px; }
-        .input-group { display: flex; flex-direction: column; gap: 12px; align-items: center; }
-        .app-input { background: var(--input-yellow); border: 1px solid var(--input-border); padding: 10px; border-radius: 6px; width: 250px; }
-
-        /* Buttons & Footer */
-        .btn-next { align-self: flex-end; margin-top: auto; background: var(--btn-next-bg); border: 1px solid #ffb8b8; color: var(--btn-next-text); padding: 8px 25px; border-radius: 4px; cursor: pointer; }
-        .footer-explanation { margin-top: 20px; color: #444; font-size: 14px; line-height: 1.5; }
+        /* Button & Footer */
+        .btn-next { align-self: flex-end; margin-top: auto; background: var(--btn-next-bg); border: 1px solid #ffb8b8; color: var(--btn-next-text); padding: 10px 30px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn-next:hover { background: #ffc4c4; }
+        .footer-explanation { margin-top: 25px; color: #444; font-size: 15px; line-height: 1.6; }
 
         .hidden { display: none !important; }
     </style>
@@ -58,7 +73,7 @@
 <body>
     <div class="canvas"></div>
 
-    <div class="screen-container" id="mainWrapper">
+    <div id="mainContainer" class="screen-container">
         <div id="pageLabel" class="page-label">Log-in Page 1</div>
         
         <div class="app-frame">
@@ -68,29 +83,37 @@
 
             <div id="step1">
                 <h2 class="welcome-msg">Welcome to ProgressViz!</h2>
-                <div style="text-align:center; margin: 20px;">
-                    <button onclick="setRole('Student')" id="roleBtn" style="background:var(--input-yellow); border:1px solid orange; padding:10px; cursor:pointer;">Select: Student</button>
+                <p class="helper-msg">Your self-learning helper!</p >
+                <div class="role-selector" onclick="toggleMenu()">
+                    <span id="selectedRole">Select</span>
+                    <div id="menu" class="options-menu">
+                        <div onclick="setRole('Student')">Student</div>
+                        <div onclick="setRole('Instructor')">Instructor</div>
+                    </div>
                 </div>
             </div>
 
             <div id="step2" class="hidden">
                 <h2 class="welcome-msg">Good morning!</h2>
                 <p class="helper-msg">Student 4375 😄</p >
-                <div style="text-align:center;"><button onclick="currentStep=3; navigate();" style="background:#d6ebff; padding:20px; border-radius:8px; border:1px solid blue; cursor:pointer;">Create an account</button></div>
+                <div class="account-actions">
+                    <div id="createBtn" class="action-card blue-card" onclick="selectAction('create')">Create an account</div>
+                    <div id="signBtn" class="action-card purple-card" onclick="selectAction('sign')">Sign in to an account</div>
+                </div>
             </div>
 
             <div id="step3" class="hidden">
-                <h2 class="welcome-msg">Create your profile!</h2>
+                <h2 class="welcome-msg">Create your profile now!</h2>
                 <div class="input-group">
-                    <input type="text" id="usernameInput" class="app-input" placeholder="Username (e.g. Joyce)">
-                    <input type="password" class="app-input" placeholder="Password">
-                    <input type="password" class="app-input" placeholder="Retype Password">
+                    <input type="text" id="usernameInput" class="app-input" placeholder="Enter Username">
+                    <input type="password" id="passInput" class="app-input" placeholder="Enter Password">
+                    <input type="password" id="retypeInput" class="app-input" placeholder="Retype Password">
                 </div>
             </div>
 
             <div id="step4" class="hidden">
-                <h2 class="welcome-msg" style="font-size: 2rem; margin-top: 40px;">Good morning!</h2>
-                <p id="displayName" style="text-align:center; font-size: 1.5rem; font-weight: bold;">Joyce 😊</p >
+                <h2 class="welcome-msg welcome-msg-large">Good morning!</h2>
+                <p id="displayName" class="helper-msg helper-msg-name">User 😊</p >
             </div>
 
             <div id="step5" class="hidden">
@@ -101,61 +124,102 @@
                     <div class="tab">Discussion</div>
                     <div class="tab">Account</div>
                 </div>
-                <h3 class="course-section-title">All Registered Courses</h3>
+                <div class="dashboard-title">All Registered Courses</div>
                 <div class="course-grid">
-                    <div class="course-card">
-                        <div class="course-img">Algebra 101</div>
-                        <span class="course-name">Algebra 101</span>
+                    <div class="course-card-item">
+                        <div class="course-thumb" style="background: #e1f5fe;">Algebra Image</div>
+                        <div class="course-title">Algebra 101</div>
                     </div>
-                    <div class="course-card">
-                        <div class="course-img">Music 185</div>
-                        <span class="course-name">Music 185</span>
+                    <div class="course-card-item">
+                        <div class="course-thumb" style="background: #f3e5f5;">Music Image</div>
+                        <div class="course-title">Music 185</div>
                     </div>
-                    <div class="course-card">
-                        <div class="course-img">Art History 103</div>
-                        <span class="course-name">Art History 103</span>
+                    <div class="course-card-item">
+                        <div class="course-thumb" style="background: #e8f5e9;">Art History Image</div>
+                        <div class="course-title">Art History 103</div>
                     </div>
-                    <div class="course-card">
-                        <div class="course-img">Chinese 201</div>
-                        <span class="course-name">Chinese 201</span>
+                    <div class="course-card-item">
+                        <div class="course-thumb" style="background: #fff3e0;">Chinese Image</div>
+                        <div class="course-title">Chinese 201</div>
                     </div>
-                    <div class="course-card">
-                        <div class="course-img">Spanish 102</div>
-                        <span class="course-name">Spanish 102</span>
+                    <div class="course-card-item">
+                        <div class="course-thumb" style="background: #efebe9;">Spanish Image</div>
+                        <div class="course-title">Spanish 102</div>
                     </div>
-                    <div class="course-card">
-                        <div class="course-img">Marketing 108</div>
-                        <span class="course-name">Marketing 108</span>
+                    <div class="course-card-item">
+                        <div class="course-thumb" style="background: #eceff1;">Marketing Image</div>
+                        <div class="course-title">Marketing 108</div>
                     </div>
                 </div>
             </div>
 
-            <button class="btn-next" id="nextBtn" onclick="navigate()">Next</button>
+            <button id="nextBtn" class="btn-next" onclick="navigate()">Next</button>
         </div>
 
-        <p id="footerText" class="footer-explanation">Select a role to begin.</p >
+        <p id="footerText" class="footer-explanation">
+            This screen allows users to select their role when entering the platform. This helps the system provide the correct interface.
+        </p >
     </div>
 
     <script>
         let currentStep = 1;
+        let selectedActionType = null;
 
-        function setRole(role) { 
-            document.getElementById('roleBtn').innerText = "Selected: " + role;
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function setRole(role) {
+            document.getElementById('selectedRole').innerText = role;
+            document.getElementById('menu').style.display = 'none';
+            event.stopPropagation();
+        }
+
+        function selectAction(type) {
+            selectedActionType = type;
+            document.getElementById('createBtn').classList.remove('selected');
+            document.getElementById('signBtn').classList.remove('selected');
+            document.getElementById(type + 'Btn').classList.add('selected');
         }
 
         function navigate() {
             if (currentStep === 1) {
-                showStep(2, "Log-in Page 2", "Select an action to continue.");
-            } else if (currentStep === 2) {
-                showStep(3, "Log-in Page 3", "Enter your credentials.");
-            } else if (currentStep === 3) {
-                const name = document.getElementById('usernameInput').value || "Joyce";
-                document.getElementById('displayName').innerText = name + " 😊";
-                showStep(4, "Log-in Page 4", "Personalized greeting improves user engagement.");
-            } else if (currentStep === 4) {
-                document.getElementById('mainWrapper').style.maxWidth = "800px"; // Expand for dashboard
-                showStep(5, "Interface: My Dashboard", "This page shows all courses the user has already registered for.");
-                document.getElementById('nextBtn').classList.add('hidden'); // End of flow
+                if (document.getElementById('selectedRole').innerText === "Student") {
+                    showStep(2, "Log-in Page 2", "This screen allows users to create a new account or sign in to an existing one.");
+                } else {
+                    alert("Please select 'Student' to continue.");
+                }
+            } 
+            else if (currentStep === 2) {
+                if (selectedActionType === 'create') {
+                    showStep(3, "Log-in Page 3", "Students enter a username and password to set up their profile.");
+                } else {
+                    alert("Select 'Create an account' to proceed.");
+                }
+            }
+            else if (currentStep === 3) {
+                const user = document.getElementById('usernameInput').value;
+                const p1 = document.getElementById('passInput').value;
+                const p2 = document.getElementById('retypeInput').value;
+
+                if (!user) {
+                    alert("Please enter a username.");
+                } else if (p1 !== p2 || p1 === "") {
+                    alert("Passwords do not match or are empty!");
+                } else {
+                    document.getElementById('displayName').innerText = user + " 😊";
+                    showStep(4, "Log-in Page 4", "This screen greets the user after logging in. It provides a personalized welcome message.");
+                }
+            }
+            else if (currentStep === 4) {
+                // Moving to Dashboard - Increase container width
+                document.getElementById('mainContainer').style.maxWidth = "800px";
+                showStep(5, "Interface: My Dashboard", "This page shows all the courses that the user has already registered for. Students can quickly see their enrolled courses.");
+                document.getElementById('nextBtn').innerText = "Finish";
+            }
+            else {
+                alert("Demo Completed!");
             }
         }
 
